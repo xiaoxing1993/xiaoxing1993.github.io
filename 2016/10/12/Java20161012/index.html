@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="java," />
 
 
 
@@ -84,28 +84,37 @@
 
 
 
-<meta name="description" content="姓名：幸骁骁
+<meta name="description" content="List集合结构分析List是JDK中非常重要的接口，用来实现常用的数据结构List接口位于java.util包下，是Colletion接口的子接口之一List接口的常用实现有下面三个
 
-学校：西安电子科技大学
+ArrayList
+LinkedList
+Vector
 
-联系方式：630712495@qq.com">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+
+ArrayList源码分析public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt; i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="List源码解析">
+<meta property="og:url" content="http://yoursite.com/2016/10/12/Java20161012/index.html">
 <meta property="og:site_name" content="秋">
-<meta property="og:description" content="姓名：幸骁骁
+<meta property="og:description" content="List集合结构分析List是JDK中非常重要的接口，用来实现常用的数据结构List接口位于java.util包下，是Colletion接口的子接口之一List接口的常用实现有下面三个
 
-学校：西安电子科技大学
+ArrayList
+LinkedList
+Vector
 
-联系方式：630712495@qq.com">
-<meta property="og:updated_time" content="2016-10-11T09:12:47.986Z">
+
+ArrayList源码分析public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt; i">
+<meta property="og:updated_time" content="2016-10-12T08:22:12.853Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="姓名：幸骁骁
+<meta name="twitter:title" content="List源码解析">
+<meta name="twitter:description" content="List集合结构分析List是JDK中非常重要的接口，用来实现常用的数据结构List接口位于java.util包下，是Colletion接口的子接口之一List接口的常用实现有下面三个
 
-学校：西安电子科技大学
+ArrayList
+LinkedList
+Vector
 
-联系方式：630712495@qq.com">
+
+ArrayList源码分析public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt; i">
 
 
 
@@ -126,16 +135,10 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/about/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/10/12/Java20161012/"/>
 
 
-  <title>
-  
-
-  
-    about | 秋
-  
-</title>
+  <title> List源码解析 | 秋 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +159,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
@@ -246,18 +249,126 @@
 
   <div id="posts" class="posts-expand">
     
-    
-      <blockquote>
-<p>姓名：幸骁骁</p>
-<blockquote>
-<p>学校：西安电子科技大学</p>
-<blockquote>
-<p>联系方式：630712495@qq.com</p>
-</blockquote>
-</blockquote>
-</blockquote>
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                List源码解析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-12T16:21:05+08:00" content="2016-10-12">
+              2016-10-12
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="List集合结构分析"><a href="#List集合结构分析" class="headerlink" title="List集合结构分析"></a>List集合结构分析</h1><p>List是JDK中非常重要的接口，用来实现常用的数据结构<br>List接口位于java.util包下，是Colletion接口的子接口之一<br>List接口的常用实现有下面三个</p>
+<ul>
+<li>ArrayList</li>
+<li>LinkedList</li>
+<li>Vector</li>
+</ul>
+<hr>
+<h2 id="ArrayList源码分析"><a href="#ArrayList源码分析" class="headerlink" title="ArrayList源码分析"></a>ArrayList源码分析</h2><p><code>public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt; implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable</code><br>由此继承结构可以看出，ArrayList实现了序列化接口，可以通过序列化传输，快速随机访问接口（通过下标号进行快速访问），可以被克隆。当然最重要的还是List接口，还有继承了抽象类AbstractList</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag">#java</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/11/poetry/" rel="next" title="清平乐 ● 红笺小字">
+                <i class="fa fa-chevron-left"></i> 清平乐 ● 红笺小字
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -289,8 +400,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -333,6 +453,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#List集合结构分析"><span class="nav-number">1.</span> <span class="nav-text">List集合结构分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList源码分析"><span class="nav-number">1.1.</span> <span class="nav-text">ArrayList源码分析</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -436,6 +567,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
 
   
 
