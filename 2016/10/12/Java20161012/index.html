@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/10/12/Java20161012/index.html">
 <meta property="og:site_name" content="秋">
 <meta property="og:description" content="List集合结构分析List是JDK中非常重要的接口，用来实现常用的数据结构List接口位于java.util包下，是Colletion接口的子接口之一">
-<meta property="og:updated_time" content="2016-10-12T08:24:38.826Z">
+<meta property="og:updated_time" content="2016-10-12T09:08:20.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="List源码解析">
 <meta name="twitter:description" content="List集合结构分析List是JDK中非常重要的接口，用来实现常用的数据结构List接口位于java.util包下，是Colletion接口的子接口之一">
@@ -294,7 +294,9 @@
 <li>Vector</li>
 </ul>
 <hr>
-<h2 id="ArrayList源码分析"><a href="#ArrayList源码分析" class="headerlink" title="ArrayList源码分析"></a>ArrayList源码分析</h2><p><code>public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt; implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable</code><br>由此继承结构可以看出，ArrayList实现了序列化接口，可以通过序列化传输，快速随机访问接口（通过下标号进行快速访问），可以被克隆。当然最重要的还是List接口，还有继承了抽象类AbstractList</p>
+<h2 id="ArrayList源码分析"><a href="#ArrayList源码分析" class="headerlink" title="ArrayList源码分析"></a>ArrayList源码分析</h2><figure class="highlight plain"><figcaption><span>class ArrayList<e> extends AbstractList<e> implements List<e>, RandomAccess, Cloneable, java.io.Serializable ``` </e></e></e></span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">由此继承结构可以看出，ArrayList实现了序列化接口，可以通过序列化传输，快速随机访问接口（通过下标号进行快速访问），可以被克隆。</div><div class="line">当然最重要的还是List接口，还有继承了抽象类AbstractList。</div><div class="line">### 私有属性</div><div class="line">```transient Object[] elementData;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>int size;```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">其中的transient是和序列化有关的属性，在对象被序列化的时候，该属性不会被序列化</div><div class="line">### 构造方法</div><div class="line">* 带参数构造方法</div><div class="line">* 无参，默认大小10</div><div class="line">* 集合参数</div><div class="line"></div><div class="line">其中比较难一点的就是集合参数，代码如下</div><div class="line">```public ArrayList(Collection&lt;? extends E&gt; c) &#123;</div><div class="line">        elementData = c.toArray();</div><div class="line">        if ((size = elementData.length) != 0) &#123;</div><div class="line">            // c.toArray might (incorrectly) not return Object[] (see 6260652)</div><div class="line">            if (elementData.getClass() != Object[].class)</div><div class="line">                elementData = Arrays.copyOf(elementData, size, Object[].class);</div><div class="line">        &#125; else &#123;</div><div class="line">            // replace with empty array.</div><div class="line">            this.elementData = EMPTY_ELEMENTDATA;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>  此构造方法接收一个集合类型参数，使用Arrays.copyOf方法进行复制</p>
 
       
     </div>
