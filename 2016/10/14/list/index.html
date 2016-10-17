@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/10/14/list/index.html">
 <meta property="og:site_name" content="秋">
 <meta property="og:description" content="List集合结构分析List是JDK中非常重要的接口，用来实现常用的数据结构List接口位于java.util包下，是Colletion接口的子接口之一">
-<meta property="og:updated_time" content="2016-10-14T02:55:33.430Z">
+<meta property="og:updated_time" content="2016-10-17T08:22:01.290Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="List源码解析">
 <meta name="twitter:description" content="List集合结构分析List是JDK中非常重要的接口，用来实现常用的数据结构List接口位于java.util包下，是Colletion接口的子接口之一">
@@ -303,7 +303,28 @@
 <li>集合参数</li>
 </ul>
 <p>其中比较难一点的就是集合参数，代码如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public ArrayList(Collection&lt;? extends E&gt; c) &#123;</div><div class="line">        elementData = c.toArray();</div><div class="line">        if ((size = elementData.length) != 0) &#123;</div><div class="line">            // c.toArray might (incorrectly) not return Object[] (see 6260652)</div><div class="line">            if (elementData.getClass() != Object[].class)</div><div class="line">                elementData = Arrays.copyOf(elementData, size, Object[].class);</div><div class="line">        &#125; else &#123;</div><div class="line">            // replace with empty array.</div><div class="line">            this.elementData = EMPTY_ELEMENTDATA;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>  此构造方法接收一个集合类型参数，使用Arrays.copyOf方法进行复制，我就试试变了没有</p>
+<p>  此构造方法接收一个集合类型参数，使用Arrays.copyOf方法进行复制</p>
+<h3 id="元素存储"><a href="#元素存储" class="headerlink" title="元素存储"></a>元素存储</h3><p>ArrayList提供了set(int index,E element),add(E e),add(int index,E element),addAll(Collection&lt;?extends E&gt; c),addAll(int index,Collection&lt;?extends E&gt; c)<br>在进行元素存储的时候都要进行数组容量保证，防止数组越界<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public boolean add(E e) &#123;</div><div class="line">        ensureCapacityInternal(size + 1);  // Increments modCount!!</div><div class="line">        elementData[size++] = e;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">public void ensureCapacity(int minCapacity) &#123;</div><div class="line">        int minExpand = (elementData != DEFAULTCAPACITY_EMPTY_ELEMENTDATA)</div><div class="line">            // any size if not default element table</div><div class="line">            ? 0</div><div class="line">            // larger than default for default empty table. It&apos;s already</div><div class="line">            // supposed to be at default size.</div><div class="line">            : DEFAULT_CAPACITY;</div><div class="line"></div><div class="line">        if (minCapacity &gt; minExpand) &#123;</div><div class="line">            ensureExplicitCapacity(minCapacity);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这个方法用来确保数组容量，由于是public方法，因此可以在事先预估数组容量下，使用该方法确保数组容量。</p>
+<p>##源码总结<br>关于ArrayList的源码，给出几点比较重要的总结：</p>
+<ul>
+<li><p>注意其三个不同的构造方法。无参构造方法构造的ArrayList的容量默认为10，带有Collection参数的构造方法，将Collection转化为数组赋给ArrayList的实现数组elementData。</p>
+</li>
+<li><p>注意扩充容量的方法ensureCapacity。ArrayList在每次增加元素（可能是1个，也可能是一组）时，都要调用该方法来确保足够的容量。当容量不足以容纳当前的元素个数时，就设置新的容量为旧的容量的1.5倍加1，如果设置后的新容量还不够，则直接新容量设置为传入的参数（也就是所需的容量），而后用Arrays.copyof()方法将元素拷贝到新的数组（详见下面的第3点）。从中可以看出，当容量不够时，每次增加元素，都要将原来的元素拷贝到一个新的数组中，非常之耗时，也因此建议在事先能确定元素数量的情况下，才使用ArrayList，否则建议使用LinkedList。</p>
+</li>
+<li><p>ArrayList的实现中大量地调用了Arrays.copyof()和System.arraycopy()方法。我们有必要对这两个方法的实现做下深入的了解。</p>
+<p>  首先来看Arrays.copyof()方法。它有很多个重载的方法，但实现思路都是一样的，我们来看泛型版本的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public static &lt;T,U&gt; T[] copyOf(U[] original, int newLength, Class&lt;? extends T[]&gt; newType) &#123;  </div><div class="line">    T[] copy = ((Object)newType == (Object)Object[].class)  </div><div class="line">        ? (T[]) new Object[newLength]  </div><div class="line">        : (T[]) Array.newInstance(newType.getComponentType(), newLength);  </div><div class="line">    System.arraycopy(original, 0, copy, 0,  </div><div class="line">                     Math.min(original.length, newLength));  </div><div class="line">    return copy;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这里可以很明显地看出，该方法实际上是在其内部又创建了一个长度为newlength的数组，调用System.arraycopy()方法，将原来数组中的元素复制到了新的数组中。</p>
+<p>下面来看System.arraycopy()方法。该方法被标记了native，调用了系统的C/C++代码，在JDK中是看不到的，但在openJDK中可以看到其源码。该函数实际上最终调用了C语言的memmove()函数，因此它可以保证同一个数组内元素的正确复制和移动，比一般的复制方法的实现效率要高很多，很适合用来批量处理数组。Java强烈推荐在复制大量数组元素时用该方法，以取得更高的效率。</p>
+<ul>
+<li><p>ArrayList基于数组实现，可以通过下标索引直接查找到指定位置的元素，因此查找效率高，但每次插入或删除元素，就要大量地移动元素，插入删除元素的效率低。</p>
+</li>
+<li><p>在查找给定元素索引值等的方法中，源码都将该元素的值分为null和不为null两种情况处理，ArrayList中允许元素为null。</p>
+</li>
+</ul>
 
       
     </div>
@@ -448,7 +469,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#List集合结构分析"><span class="nav-number">1.</span> <span class="nav-text">List集合结构分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList源码分析"><span class="nav-number">2.</span> <span class="nav-text">ArrayList源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#私有属性"><span class="nav-number">2.1.</span> <span class="nav-text">私有属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-number">2.2.</span> <span class="nav-text">构造方法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#List集合结构分析"><span class="nav-number">1.</span> <span class="nav-text">List集合结构分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList源码分析"><span class="nav-number">2.</span> <span class="nav-text">ArrayList源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#私有属性"><span class="nav-number">2.1.</span> <span class="nav-text">私有属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-number">2.2.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#元素存储"><span class="nav-number">2.3.</span> <span class="nav-text">元素存储</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
